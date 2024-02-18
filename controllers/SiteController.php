@@ -2,6 +2,9 @@
 
 namespace app\controllers;
 
+use app\components\SignatureGenerator;
+use app\models\CredyApplicationForm;
+use app\services\CredyApplicationServiceInterface;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -59,7 +62,7 @@ class SiteController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index');
     }
@@ -124,5 +127,40 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+    /**
+     * Displays credy-application page.
+     *
+     * @param CredyApplicationServiceInterface $applicationService
+     * @return string
+     */
+    public function actionCredyApplication(CredyApplicationServiceInterface $applicationService): string
+    {
+        $model = new CredyApplicationForm();
+
+        if($model->load(Yii::$app->request->post()) && $model->validate()){
+            $timestamp = time();
+            $signature = SignatureGenerator::generateSignature($timestamp);
+
+            $data = [
+                'application' => $model->attributes,
+                'timestamp' => (int) $timestamp,
+                'signature' => $signature
+            ];
+
+            try {
+                $response = $applicationService->sendApplication($data);
+
+                return $this->render(
+                    'credy-application-confirm',
+                    ['model' => $model, 'timestamp' => $timestamp, 'signature' => $signature, 'response' => $response]
+                );
+            } catch (\Exception $e) {
+                return $this->render('error', ['name' => 'Error', 'message' => $e->getMessage()]);
+            }
+        } else {
+            return $this->render('credy-application', ['model' => $model]);
+        }
     }
 }

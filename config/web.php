@@ -3,6 +3,10 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
+$container = Yii::$container;
+$container->set('app\services\CredyApplicationServiceInterface', 'app\services\CredyApplicationService');
+$container->set('app\components\http\HttpRequestInterface', 'app\components\http\CurlRequest');
+
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),

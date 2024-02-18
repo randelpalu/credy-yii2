@@ -2,6 +2,10 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/test_db.php';
 
+$container = Yii::$container;
+$container->set('app\services\CredyApplicationServiceInterface', 'app\services\CredyApplicationService');
+$container->set('app\components\http\HttpRequestInterface', 'app\components\http\CurlRequest');
+
 /**
  * Application configuration shared by all test types
  */
