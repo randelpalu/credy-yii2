@@ -22,7 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= $form->field($model, 'lastName') ?>
             <?= $form->field($model, 'email') ?>
             <?= $form->field($model, 'bio')->textarea(['rows' => '10']) ?>
-            <?= $form->field($model, 'technologies')->label('Technologies (comma separated values please)') ?>
+            <?= $form->field($model, 'technologies')->textarea(['rows' => '2'])->label('Technologies (comma separated values please)') ?>
             <?= $form->field($model, 'vcsUri') ?>
 
             <div class="form-group">
